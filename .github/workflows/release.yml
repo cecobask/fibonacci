@@ -41,7 +41,14 @@ jobs:
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "$REGISTRY_PASSWORD" | podman login ghcr.io --username "$REGISTRY_USER" --password-stdin
+        # The attest step only reads registry credentials from ~/.docker/config.json,
+        # so store podman's credentials there and use that file for later steps too.
+        # The two auth file formats are compatible.
+        run: |
+          auth_file="$HOME/.docker/config.json"
+          mkdir -p "$(dirname "$auth_file")"
+          echo "$REGISTRY_PASSWORD" | podman login ghcr.io --authfile "$auth_file" --username "$REGISTRY_USER" --password-stdin
+          echo "REGISTRY_AUTH_FILE=$auth_file" >> "$GITHUB_ENV"
 
       - name: Push image
         id: push
@@ -59,3 +66,5 @@ jobs:
           subject-name: ${{ env.IMAGE }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+          # Storage records are only supported for organization-owned repositories.
+          create-storage-record: false
