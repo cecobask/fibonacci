@@ -54,7 +54,7 @@ func run(ctx context.Context, getenv func(string) string, stdout io.Writer) erro
 		serveErr <- srv.Serve(ln)
 	}()
 	srv.SetReady(true)
-	logger.Info("server started", slog.String("addr", ln.Addr().String()), slog.String("version", version))
+	logger.InfoContext(ctx, "server started", slog.String("addr", ln.Addr().String()), slog.String("version", version))
 
 	select {
 	case err := <-serveErr:
@@ -63,7 +63,7 @@ func run(ctx context.Context, getenv func(string) string, stdout io.Writer) erro
 	}
 	stop() // a second signal terminates the process immediately
 
-	logger.Info("shutdown started", slog.Duration("delay", cfg.ShutdownDelay), slog.Duration("timeout", cfg.ShutdownTimeout))
+	logger.InfoContext(ctx, "shutdown started", slog.Duration("delay", cfg.ShutdownDelay), slog.Duration("timeout", cfg.ShutdownTimeout))
 	srv.SetReady(false)
 	time.Sleep(cfg.ShutdownDelay)
 
@@ -76,7 +76,7 @@ func run(ctx context.Context, getenv func(string) string, stdout io.Writer) erro
 		return fmt.Errorf("serving: %w", err)
 	}
 
-	logger.Info("shutdown complete")
+	logger.InfoContext(ctx, "shutdown complete")
 	return nil
 }
 

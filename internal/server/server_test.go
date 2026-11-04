@@ -38,7 +38,7 @@ type response struct {
 func do(t *testing.T, method, url string, header http.Header) response {
 	t.Helper()
 
-	req, err := http.NewRequestWithContext(t.Context(), method, url, nil)
+	req, err := http.NewRequestWithContext(t.Context(), method, url, http.NoBody)
 	if err != nil {
 		t.Fatalf("creating request: %v", err)
 	}

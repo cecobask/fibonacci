@@ -59,7 +59,7 @@ func waitReady(t *testing.T, baseURL string) {
 
 	deadline := time.Now().Add(5 * time.Second)
 	for time.Now().Before(deadline) {
-		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, baseURL+"/readyz", nil)
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, baseURL+"/readyz", http.NoBody)
 		if err != nil {
 			t.Fatalf("creating request: %v", err)
 		}
@@ -97,7 +97,7 @@ func TestRun(t *testing.T) {
 
 	waitReady(t, baseURL)
 
-	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, baseURL+"/v1/fibonacci?n=5", nil)
+	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, baseURL+"/v1/fibonacci?n=5", http.NoBody)
 	if err != nil {
 		t.Fatalf("creating request: %v", err)
 	}

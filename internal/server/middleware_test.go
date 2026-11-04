@@ -22,7 +22,7 @@ func TestRecoverer(t *testing.T) {
 	}))
 
 	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/", nil))
+	h.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", http.NoBody))
 
 	if rec.Code != http.StatusInternalServerError {
 		t.Errorf("status = %d, want %d", rec.Code, http.StatusInternalServerError)
@@ -70,7 +70,7 @@ func TestAccessLog(t *testing.T) {
 		w.WriteHeader(http.StatusTeapot)
 	})))
 
-	req := httptest.NewRequest(http.MethodGet, "/v1/fibonacci?n=1", nil)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/v1/fibonacci?n=1", http.NoBody)
 	req.Header.Set(requestIDHeader, "req-1")
 	h.ServeHTTP(httptest.NewRecorder(), req)
 

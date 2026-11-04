@@ -1,0 +1,72 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: standard
+  enable:
+    - bodyclose
+    - contextcheck
+    - copyloopvar
+    - errname
+    - errorlint
+    - exhaustive
+    - forcetypeassert
+    - gocritic
+    - gosec
+    - intrange
+    - misspell
+    - nolintlint
+    - noctx
+    - perfsprint
+    - revive
+    - sloglint
+    - tparallel
+    - unconvert
+    - unparam
+    - usestdlibvars
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+    revive:
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: unused-parameter
+        - name: context-as-argument
+        - name: error-return
+        - name: error-strings
+        - name: indent-error-flow
+        - name: var-naming
+    sloglint:
+      attr-only: true
+      no-global: all
+      context: scope
+      static-msg: true
+      key-naming-case: snake
+  exclusions:
+    generated: strict
+    presets:
+      - std-error-handling
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/cecobask/fibonacci
+  exclusions:
+    generated: strict
