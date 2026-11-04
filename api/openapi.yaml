@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Fibonacci API
+  description: Returns sequences of Fibonacci numbers.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local development
+paths:
+  /v1/fibonacci:
+    get:
+      operationId: getFibonacci
+      summary: Get the first n Fibonacci numbers
+      description: |
+        Returns the first `n` Fibonacci numbers, starting from 0.
+        The upper bound keeps every value within a signed 64-bit integer.
+      tags:
+        - fibonacci
+      parameters:
+        - name: "n"
+          in: query
+          required: true
+          description: Number of Fibonacci numbers to return.
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 93
+          example: 5
+      responses:
+        "200":
+          description: The requested Fibonacci sequence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sequence"
+              example: [0, 1, 1, 2, 3]
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalError"
+components:
+  schemas:
+    Sequence:
+      type: array
+      items:
+        type: integer
+        format: int64
+    Problem:
+      description: Error details as defined by RFC 9457.
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          description: URI reference identifying the problem type.
+          example: about:blank
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type.
+          example: Bad Request
+        status:
+          type: integer
+          description: HTTP status code.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+          example: n must not be negative
+        instance:
+          type: string
+          description: URI reference identifying this occurrence.
+  responses:
+    BadRequest:
+      description: The request was invalid.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    InternalError:
+      description: An unexpected error occurred.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
