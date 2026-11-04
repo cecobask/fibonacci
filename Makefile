@@ -77,6 +77,13 @@ image-push: ## Push the multi-arch manifest list to the registry
 image-run: image ## Build and run the container image locally
 	podman run --rm -p 8080:8080 $(IMAGE):$(VERSION)
 
+##@ Kubernetes
+
+.PHONY: k8s-render
+k8s-render: ## Render the Kustomize overlays
+	kubectl kustomize deploy/kubernetes/overlays/staging
+	kubectl kustomize deploy/kubernetes/overlays/production
+
 .PHONY: clean
 clean: ## Remove build artifacts
 	rm -rf bin coverage.out

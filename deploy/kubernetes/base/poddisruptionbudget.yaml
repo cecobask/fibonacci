@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: fibonacci
+spec:
+  # maxUnavailable (rather than minAvailable) never blocks node drains,
+  # even when an overlay runs a single replica.
+  maxUnavailable: 1
+  selector:
+    matchLabels: {}
