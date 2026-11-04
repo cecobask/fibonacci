@@ -58,6 +58,25 @@ tidy: ## Tidy go.mod and go.sum
 check: generate tidy lint test ## Run everything CI runs and fail on uncommitted changes
 	git diff --exit-code
 
+##@ Containers
+
+.PHONY: image
+image: ## Build the container image for the local platform
+	podman build --build-arg VERSION=$(VERSION) -t $(IMAGE):$(VERSION) .
+
+.PHONY: image-multiarch
+image-multiarch: ## Build a multi-arch manifest list for $(PLATFORMS)
+	-podman manifest rm $(IMAGE):$(VERSION) 2>/dev/null
+	podman build --build-arg VERSION=$(VERSION) --platform $(PLATFORMS) --manifest $(IMAGE):$(VERSION) .
+
+.PHONY: image-push
+image-push: ## Push the multi-arch manifest list to the registry
+	podman manifest push --all $(IMAGE):$(VERSION)
+
+.PHONY: image-run
+image-run: image ## Build and run the container image locally
+	podman run --rm -p 8080:8080 $(IMAGE):$(VERSION)
+
 .PHONY: clean
 clean: ## Remove build artifacts
 	rm -rf bin coverage.out
