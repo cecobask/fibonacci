@@ -1,0 +1,12 @@
+# Build output
+/bin/
+
+# Test artifacts
+coverage.out
+*.test
+/internal/**/testdata/fuzz/
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
