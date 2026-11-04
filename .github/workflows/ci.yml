@@ -74,7 +74,7 @@ jobs:
           persist-credentials: false
       - name: Render Kustomize overlays
         run: |
-          for dir in deploy/kubernetes/overlays/*; do
+          for dir in deploy/kubernetes/overlays/* deploy/flux; do
             echo "::group::$dir"
             kubectl kustomize "$dir"
             echo "::endgroup::"

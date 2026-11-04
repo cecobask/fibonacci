@@ -1,0 +1,18 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: fibonacci-production
+  namespace: flux-system
+spec:
+  # Production is only reconciled after staging is healthy.
+  dependsOn:
+    - name: fibonacci-staging
+  interval: 10m
+  retryInterval: 1m
+  timeout: 3m
+  sourceRef:
+    kind: GitRepository
+    name: fibonacci
+  path: ./deploy/kubernetes/overlays/production
+  prune: true
+  wait: true

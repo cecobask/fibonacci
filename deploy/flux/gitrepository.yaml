@@ -1,0 +1,14 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: fibonacci
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: https://github.com/cecobask/fibonacci
+  ref:
+    branch: main
+  # Only fetch the Kubernetes manifests.
+  ignore: |
+    /*
+    !/deploy/kubernetes/
